@@ -4,7 +4,7 @@ import { Products } from './Products.page'
 import { Layout } from './Layout'
 import { ProductDetail } from './ProductDetail'
 import {ShoppingCart} from './ShoppingCart.page'
-import AdminProducts from './AdminPanel.page'
+import {AdminPanel} from './AdminPanel.page'
 import { Login } from './Login.page'
 import { Register } from './Register.page'
 import { MyProfile } from './Myprofile.page'
@@ -31,12 +31,6 @@ const cartDetailsRoute = createRoute({
   component: ShoppingCart,
 })
 
-const adminPanelRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/admin',
-  component: AdminProducts,
-})
-
 const productDetailRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/products/$productId',
@@ -60,7 +54,11 @@ const myProfileRoute = createRoute({
   path: '/myprofile',
   component: MyProfile,
 })
-
+const adminPanelRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/admin',
+  component: AdminPanel,
+})
 const routeTree = rootRoute.addChildren([indexRoute, productsRoute, productDetailRoute, cartDetailsRoute, adminPanelRoute, loginRoute, registerRoute, myProfileRoute])
 
 export const router = createRouter({

@@ -1,98 +1,86 @@
 import React from 'react'
-import { ShoppingCart } from 'lucide-react'
+import { Link } from '@tanstack/react-router'
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-import { Link } from '@tanstack/react-router'
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination"
 
-const products = [
-  { id: 1, name: "Farm Fresh Eggs", price: 4.99, category: "Dairy", image: "/placeholder.svg" },
-  { id: 2, name: "Organic Honey", price: 8.50, category: "Sweeteners", image: "/placeholder.svg" },
-  { id: 3, name: "Artisan Bread", price: 5.99, category: "Bakery", image: "/placeholder.svg" },
-  { id: 4, name: "Fresh Spinach", price: 3.99, category: "Vegetables", image: "/placeholder.svg" },
-  { id: 5, name: "Grass-fed Beef", price: 12.99, category: "Meat", image: "/placeholder.svg" },
-  { id: 6, name: "Organic Apples", price: 6.99, category: "Fruits", image: "/placeholder.svg" },
-]
+// Mock product data
+const allProducts = Array.from({ length: 50 }, (_, i) => ({
+  id: i + 1,
+  name: `Product ${i + 1}`,
+  description: `This is a description for Product ${i + 1}`,
+  price: (Math.random() * 100 + 1).toFixed(2),
+  image: `/placeholder.svg?height=200&width=200&text=Product+${i + 1}`,
+}))
+
+const ITEMS_PER_PAGE = 12
 
 export function Products() {
-  const [searchTerm, setSearchTerm] = React.useState("")
-  const [categoryFilter, setCategoryFilter] = React.useState("All")
+  const [currentPage, setCurrentPage] = React.useState(1)
+  const totalPages = Math.ceil(allProducts.length / ITEMS_PER_PAGE)
 
-  const filteredProducts = products.filter(product =>
-    product.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
-    (categoryFilter === "All" || product.category === categoryFilter)
+  const paginatedProducts = allProducts.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
   )
 
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-8">Our Products</h1>
-      <div className="flex flex-col md:flex-row gap-4 mb-8">
-        <div className="flex-1">
-          <Label htmlFor="search">Search Products</Label>
-          <Input
-            id="search"
-            placeholder="Search..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
-        <div className="w-full md:w-48">
-          <Label htmlFor="category">Category</Label>
-          <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-            <SelectTrigger id="category">
-              <SelectValue placeholder="Select a category" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="All">All Categories</SelectItem>
-              <SelectItem value="Dairy">Dairy</SelectItem>
-              <SelectItem value="Sweeteners">Sweeteners</SelectItem>
-              <SelectItem value="Bakery">Bakery</SelectItem>
-              <SelectItem value="Vegetables">Vegetables</SelectItem>
-              <SelectItem value="Meat">Meat</SelectItem>
-              <SelectItem value="Fruits">Fruits</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredProducts.map((product) => (
-          <Card key={product.id}>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {paginatedProducts.map((product) => (
+          <Card key={product.id} className="flex flex-col">
             <CardHeader>
-              <CardTitle>
-                <Link to="/products/$productId" params={{ productId: product.id.toString() }} className="hover:underline">
-                  {product.name}
-                </Link>
-              </CardTitle>
-              <CardDescription>{product.category}</CardDescription>
+              <img src={product.image} alt={product.name} className="w-full h-48 object-cover" />
+              <CardTitle>{product.name}</CardTitle>
             </CardHeader>
-            <CardContent>
-              <Link to="/products/$productId" params={{ productId: product.id.toString() }}>
-                <img src={product.image} alt={product.name} className="w-full h-48 object-cover rounded-md" />
-              </Link>
+            <CardContent className="flex-grow">
+              <p className="text-gray-600">{product.description}</p>
+              <p className="text-lg font-bold mt-2">${product.price}</p>
             </CardContent>
-            <CardFooter className="flex justify-between">
-              <p className="text-lg font-semibold">${product.price.toFixed(2)}</p>
-              <Button>
-                <ShoppingCart className="mr-2 h-4 w-4" /> Add to Cart
-              </Button>
+            <CardFooter>
+              <Link to={`/products/${product.id}`} className="w-full">
+                <Button className="w-full">View Details</Button>
+              </Link>
             </CardFooter>
           </Card>
         ))}
+      </div>
+      <div className="mt-8">
+        <Pagination>
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious
+                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1}
+              />
+            </PaginationItem>
+            {[...Array(totalPages)].map((_, index) => (
+              <PaginationItem key={index}>
+                <PaginationLink
+                  onClick={() => setCurrentPage(index + 1)}
+                  isActive={currentPage === index + 1}
+                >
+                  {index + 1}
+                </PaginationLink>
+              </PaginationItem>
+            ))}
+            <PaginationItem>
+              <PaginationNext
+                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                disabled={currentPage === totalPages}
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
       </div>
     </div>
   )

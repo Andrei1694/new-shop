@@ -3,8 +3,11 @@ import FoodShopLanding from './FoodShopLanding.page'
 import { Products } from './Products.page'
 import { Layout } from './Layout'
 import { ProductDetail } from './ProductDetail'
-import CartDetails from './ShoppingCartDetail.page'
+import {ShoppingCart} from './ShoppingCart.page'
 import AdminProducts from './AdminPanel.page'
+import { Login } from './Login.page'
+import { Register } from './Register.page'
+import { MyProfile } from './Myprofile.page'
 
 const rootRoute = createRootRoute({
 	component: Layout,
@@ -25,7 +28,7 @@ const productsRoute = createRoute({
 const cartDetailsRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/cart',
-  component: CartDetails,
+  component: ShoppingCart,
 })
 
 const adminPanelRoute = createRoute({
@@ -40,7 +43,25 @@ const productDetailRoute = createRoute({
   component: ProductDetail,
 })
 
-const routeTree = rootRoute.addChildren([indexRoute, productsRoute, productDetailRoute, cartDetailsRoute, adminPanelRoute])
+const loginRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/login',
+  component: Login,
+})
+
+const registerRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/register',
+  component: Register,
+})
+
+const myProfileRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/myprofile',
+  component: MyProfile,
+})
+
+const routeTree = rootRoute.addChildren([indexRoute, productsRoute, productDetailRoute, cartDetailsRoute, adminPanelRoute, loginRoute, registerRoute, myProfileRoute])
 
 export const router = createRouter({
   routeTree // Use routeTree instead of routeConfig

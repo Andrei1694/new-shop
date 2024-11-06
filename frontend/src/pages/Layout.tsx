@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link, Outlet } from '@tanstack/react-router'
-import { ShoppingCart, Menu } from 'lucide-react'
+import { ShoppingCart, Menu, User } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import {
   Sheet,
@@ -10,6 +10,12 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 export function Layout() {
   return (
@@ -28,9 +34,29 @@ export function Layout() {
             <Button variant="link" className="text-primary-foreground">Contact</Button>
           </nav>
           <div className="flex items-center space-x-4">
-            <Button variant="ghost" size="icon">
-              <ShoppingCart className="h-6 w-6" />
-            </Button>
+            <Link to="/cart">
+              <Button variant="ghost" size="icon">
+                <ShoppingCart className="h-6 w-6" />
+              </Button>
+            </Link>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  <User className="h-6 w-6" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem asChild>
+                  <Link to="/my-profile">My Profile</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/login">Login</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/register">Register</Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
             <Sheet>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon" className="md:hidden">
@@ -53,6 +79,18 @@ export function Layout() {
                   </Link>
                   <Button variant="ghost" className="w-full justify-start">About</Button>
                   <Button variant="ghost" className="w-full justify-start">Contact</Button>
+                  <Link to="/cart">
+                    <Button variant="ghost" className="w-full justify-start">Cart</Button>
+                  </Link>
+                  <Link to="/my-profile">
+                    <Button variant="ghost" className="w-full justify-start">My Profile</Button>
+                  </Link>
+                  <Link to="/login">
+                    <Button variant="ghost" className="w-full justify-start">Login</Button>
+                  </Link>
+                  <Link to="/register">
+                    <Button variant="ghost" className="w-full justify-start">Register</Button>
+                  </Link>
                 </nav>
               </SheetContent>
             </Sheet>

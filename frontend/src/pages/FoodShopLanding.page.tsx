@@ -1,4 +1,3 @@
-import React from 'react'
 import { ShoppingCart, Menu, X, Facebook, Twitter, Instagram } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import {
@@ -9,14 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet"
+
 
 export default function FoodShopLanding() {
   return (

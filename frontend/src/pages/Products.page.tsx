@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Link } from '@tanstack/react-router'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -11,6 +11,8 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination"
+import { useQuery } from '@tanstack/react-query'
+import { productsRoute } from './routes'
 
 // Mock product data
 const allProducts = Array.from({ length: 50 }, (_, i) => ({
@@ -24,13 +26,29 @@ const allProducts = Array.from({ length: 50 }, (_, i) => ({
 const ITEMS_PER_PAGE = 12
 
 export function Products() {
+	const { queryKey } = productsRoute.useLoaderData()
   const [currentPage, setCurrentPage] = React.useState(1)
-  const totalPages = Math.ceil(allProducts.length / ITEMS_PER_PAGE)
+  const [paginatedProducts, setPaginatedProducts] = React.useState<any[]>([])
+  const { data: products } = useQuery({
+    queryKey,
+    queryFn: async () => {
+      const response = await fetch('http://localhost:5000/api/products')
+      if (!response.ok) throw new Error('Failed to fetch products')
+      return response.json()
+    },
+    staleTime: 1000 * 60,
+  })
 
-  const paginatedProducts = allProducts.slice(
-    (currentPage - 1) * ITEMS_PER_PAGE,
-    currentPage * ITEMS_PER_PAGE
-  )
+  const totalPages = products ? Math.ceil(products.length / ITEMS_PER_PAGE) : 0
+
+  useEffect(() => {
+    if (products) {
+      setPaginatedProducts(products.slice(
+        (currentPage - 1) * ITEMS_PER_PAGE,
+        currentPage * ITEMS_PER_PAGE
+      ))
+    }
+  }, [currentPage, products])
 
   return (
     <div className="container mx-auto px-4 py-8">

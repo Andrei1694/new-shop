@@ -1,4 +1,3 @@
-import React from 'react'
 import { Link, Outlet } from '@tanstack/react-router'
 import { ShoppingCart, Menu, User } from 'lucide-react'
 import { Button } from "@/components/ui/button"
@@ -47,7 +46,7 @@ export function Layout() {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuItem asChild>
-                  <Link to="/my-profile">My Profile</Link>
+                  <Link to="/myprofile">My Profile</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <Link to="/login">Login</Link>
@@ -82,7 +81,7 @@ export function Layout() {
                   <Link to="/cart">
                     <Button variant="ghost" className="w-full justify-start">Cart</Button>
                   </Link>
-                  <Link to="/my-profile">
+                  <Link to="/myprofile">
                     <Button variant="ghost" className="w-full justify-start">My Profile</Button>
                   </Link>
                   <Link to="/login">

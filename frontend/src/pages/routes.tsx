@@ -8,6 +8,9 @@ import {AdminPanel} from './AdminPanel.page'
 import { Login } from './Login.page'
 import { Register } from './Register.page'
 import { MyProfile } from './Myprofile.page'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+
+const queryClient = new QueryClient()
 
 const rootRoute = createRootRoute({
 	component: Layout,
@@ -19,10 +22,27 @@ const indexRoute = createRoute({
   component: FoodShopLanding,
 })
 
-const productsRoute = createRoute({
+export const productsRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/products',
   component: Products,
+  loader: async () => {
+    // Prefetch the query
+    await queryClient.prefetchQuery({
+      queryKey: ['products'],
+      queryFn: async () => {
+        const response = await fetch('http://localhost:5000/api/products')
+        if (!response.ok) throw new Error('Failed to fetch products')
+		console.log(response)
+        return response.json()
+      }
+    })
+
+    // Return the query options to be used in the component
+    return {
+      queryKey: ['products']
+    }
+  },
 })
 
 const cartDetailsRoute = createRoute({
@@ -62,7 +82,10 @@ const adminPanelRoute = createRoute({
 const routeTree = rootRoute.addChildren([indexRoute, productsRoute, productDetailRoute, cartDetailsRoute, adminPanelRoute, loginRoute, registerRoute, myProfileRoute])
 
 export const router = createRouter({
-  routeTree // Use routeTree instead of routeConfig
+  routeTree,
+context: {
+    queryClient,
+  },
 })
 
 // Declare the router type

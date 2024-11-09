@@ -2,10 +2,10 @@ import React, { useEffect } from 'react'
 import { Link } from '@tanstack/react-router'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { ShoppingCart } from "lucide-react"
 import {
   Pagination,
   PaginationContent,
-  PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,
@@ -13,22 +13,16 @@ import {
 } from "@/components/ui/pagination"
 import { useQuery } from '@tanstack/react-query'
 import { productsRoute } from './routes'
-
-// Mock product data
-const allProducts = Array.from({ length: 50 }, (_, i) => ({
-  id: i + 1,
-  name: `Product ${i + 1}`,
-  description: `This is a description for Product ${i + 1}`,
-  price: (Math.random() * 100 + 1).toFixed(2),
-  image: `/placeholder.svg?height=200&width=200&text=Product+${i + 1}`,
-}))
+import { useToast } from "../hooks/use-toast"
 
 const ITEMS_PER_PAGE = 12
 
 export function Products() {
-	const { queryKey } = productsRoute.useLoaderData()
+  const { queryKey } = productsRoute.useLoaderData()
   const [currentPage, setCurrentPage] = React.useState(1)
   const [paginatedProducts, setPaginatedProducts] = React.useState<any[]>([])
+  const { toast } = useToast()
+
   const { data: products } = useQuery({
     queryKey,
     queryFn: async () => {
@@ -50,6 +44,13 @@ export function Products() {
     }
   }, [currentPage, products])
 
+  const handleAddToCart = (product: any) => {
+    toast({
+      title: "Added to Cart",
+      description: `${product.name} has been added to your cart.`,
+    })
+  }
+
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-8">Our Products</h1>
@@ -64,10 +65,16 @@ export function Products() {
               <p className="text-gray-600">{product.description}</p>
               <p className="text-lg font-bold mt-2">${product.price}</p>
             </CardContent>
-            <CardFooter>
-              <Link to={`/products/${product.id}`} className="w-full">
-                <Button className="w-full">View Details</Button>
+            <CardFooter className="flex justify-between items-center">
+              <Link to={`/products/${product.id}`} className="text-blue-600 hover:underline">
+                View Details
               </Link>
+              <Button 
+                onClick={() => handleAddToCart(product)}
+                className="flex items-center"
+              >
+                <ShoppingCart className="mr-2 h-4 w-4" /> Add to Cart
+              </Button>
             </CardFooter>
           </Card>
         ))}

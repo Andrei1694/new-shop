@@ -1,9 +1,9 @@
 import path from "path"
 import react from "@vitejs/plugin-react"
 import { defineConfig } from "vite"
-import { TanStackRouterVite } from '@tanstack/router-vite-plugin'
+
 export default defineConfig({
-  plugins: [react(), TanStackRouterVite()],
+  plugins: [react()], // Remove the TanStack Router plugin since you're using programmatic routing
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
